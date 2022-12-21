@@ -1,0 +1,166 @@
+{% extends 'base.html' %}
+{% include 'header.html' %}
+
+{% block title %}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col md-12 bg-light mt-3">
+            <div class="d-flex p-3 justify-content-between">
+                <h2>Commodities Management</h2>
+                <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modaladd">Add New Commodities</button>
+            </div>
+
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            {%for message in messages %}
+
+            <div class="alert alert-success alert-dismissible" role="alert">
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria_label="Close">
+                </button>
+                {{message}}
+            </div>
+
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
+
+            <table class="table table-dark table-striped">
+                <tr>
+                    <th>ID</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Barcode</th>
+                    <th scope="col">Amount</th>
+                    <th scope="col">Buying Price</th>
+                    <th scope="col">Celling Price</th>
+                    <th scope="col">Revenue</th>
+                    <th scope="col">Supplier</th>
+                    <th scope="col">Action</th>
+                </tr>
+
+                {% for row in commodities %}
+                <tr>
+                    <td>{{row.id}}</td>
+                    <td>{{row.name}}</td>
+                    <td>{{row.barcode}}</td>
+                    <td>{{row.amount}}</td>
+                    <td>{{row.buying_price}}</td>
+                    <td>{{row.selling_price}}</td>
+                    <td>{{row.revenue}}</td>
+                    <td>{{row.supplier}}</td>
+                    <td>
+                        <a href="/update/{{row.id}}" data-bs-toggle="modal" data-bs-target="#modaledit{{row.id}}" class="btn btn-warning">Edit</a>
+                        <a href="/delete/{{row.id}}" onclick="return confirm('Are you sure to delete?')" class="btn btn-danger">Delete</a>
+                    </td>
+
+                </tr>
+
+
+            <!-- Modal Edit -->
+                <div class="modal fade" id="modaledit{{row.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5">Add Commodities</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form action="{{url_for('update')}}" method="POST">
+                                    <input type="hidden" name="id" value="{{row.id}}">
+                                    <div class="input-group mb-3">
+                                        <span class="input-group-text bg-dark text-light">Name</span>
+                                        <input type="text" name="name" value="{{row.name}}" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+                                    </div>
+
+                                    <div class="input-group mb-3">
+                                        <span class="input-group-text bg-dark text-light">Barcode</span>
+                                        <input type="text" name="barcode" value="{{row.barcode}}" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+                                    </div>
+
+                                    <div class="input-group mb-3">
+                                        <span class="input-group-text bg-dark text-light">Amount</span>
+                                        <input type="number" name="amount" value="{{row.amount}}" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+                                    </div>
+
+                                    <div class="input-group mb-3">
+                                        <span class="input-group-text bg-dark text-light">Buying Price</span>
+                                        <input type="number" name="buy" value="{{row.buying_price}}" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+                                    </div>
+
+                                    <div class="input-group mb-3">
+                                        <span class="input-group-text bg-dark text-light">Selling Price</span>
+                                        <input type="number" name="sell" value="{{row.selling_price}}" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+                                    </div>
+
+                                    <div class="input-group mb-3">
+                                        <span class="input-group-text bg-dark text-light">Supplier</span>
+                                        <input type="text" name="supplier" value="{{row.supplier}}" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+                                    </div>
+
+                                    <button type="submit" class="btn btn-primary">Update</button>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<!-- modal add -->
+<div class="modal fade" id="modaladd" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Add Commodities</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form action="{{url_for('insert')}}" method="POST">
+            <div class="input-group mb-3">
+                <span class="input-group-text bg-dark text-light" id="input-name">Name</span>
+                <input type="text" name="name" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+            </div>
+
+            <div class="input-group mb-3">
+                <span class="input-group-text bg-dark text-light" id="input-barcode">Barcode</span>
+                <input type="text" name="barcode" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+            </div>
+
+            <div class="input-group mb-3">
+                <span class="input-group-text bg-dark text-light" id="input-amount">Amount</span>
+                <input type="number" name="amount" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+            </div>
+
+            <div class="input-group mb-3">
+                <span class="input-group-text bg-dark text-light" id="input-buyingPrice">Buying Price</span>
+                <input type="number" name="buy" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+            </div>
+
+            <div class="input-group mb-3">
+                <span class="input-group-text bg-dark text-light" id="input-sellingPrice">Selling Price</span>
+                <input type="number" name="sell" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+            </div>
+
+            <div class="input-group mb-3">
+                <span class="input-group-text bg-dark text-light" id="input-supplier">Supplier</span>
+                <input type="text" name="supplier" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+            </div>
+
+            <button type="submit" class="btn btn-primary">Add New Commodity</button>
+        </form>
+      </div>
+      <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,11 @@
+.my-button-size{
+    width: 200px;
+    height: 100px;
+
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.my-button-style:hover {
+    color: red;
+}
